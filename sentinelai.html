@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel - Misinformation Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .lucide-icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <div id="app" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-8 w-8 text-blue-600">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        Sentinel
+                    </h1>
+                </div>
+                <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+                    AI-powered protection against misinformation and digital deception
+                </p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2">
+                <div class="bg-white rounded-xl shadow-lg border-0 overflow-hidden">
+                    <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+                        <h2 class="text-xl font-semibold flex items-center gap-2 text-blue-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5 text-blue-600">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-8.6"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            Analyze Content
+                        </h2>
+                        <p class="text-sm mt-1 text-blue-700">
+                            Paste text, a URL, or a social media post to verify
+                        </p>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div class="space-y-3">
+                            <label for="content-type" class="text-sm font-medium text-gray-700">Content Type</label>
+                            <select id="content-type" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="news">📰 News Article</option>
+                                <option value="message">💬 Message/WhatsApp</option>
+                            </select>
+                        </div>
+                        <div class="space-y-3">
+                            <label for="content-url" class="text-sm font-medium text-gray-700">URL to Analyze (Optional)</label>
+                            <input type="text" id="content-url" placeholder="https://example.com/article" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-300 transition-colors">
+                        </div>
+                        <div class="space-y-3">
+                            <label for="content" class="text-sm font-medium text-gray-700">Content to Analyze</label>
+                            <textarea id="content" placeholder="Paste the content you want to analyze here..." class="min-h-[200px] w-full p-4 border-2 border-gray-300 rounded-lg resize-none focus:border-blue-300 transition-colors"></textarea>
+                        </div>
+                        <div class="space-y-3">
+                            <label for="content-lang" class="text-sm font-medium text-gray-700">Language</label>
+                            <select id="content-lang" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="en">English</option>
+                                <option value="hi">Hindi</option>
+                                <option value="es">Spanish</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button id="analyze-btn" class="w-full h-12 flex items-center justify-center font-semibold text-white rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            🔍 Analyze Content
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-0 overflow-hidden">
+                    <div class="p-6 bg-gradient-to-r from-slate-50 to-gray-50">
+                        <h2 class="text-xl font-semibold flex items-center gap-2 text-gray-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5 text-blue-600">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            Analysis Results
+                        </h2>
+                        <p class="text-sm mt-1 text-gray-600">
+                            AI-powered assessment of content credibility and trustworthiness
+                        </p>
+                    </div>
+                    <div id="results-container" class="p-6 space-y-6">
+                        <div id="initial-state" class="text-center py-12">
+                            <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-full p-6 inline-flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-8 w-8 text-blue-600">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-500 font-medium">Ready to analyze</p>
+                            <p class="text-sm text-gray-500 mt-1">Enter content in the left panel to begin verification</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border-0 mt-6 overflow-hidden">
+                <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <h2 class="text-xl font-semibold flex items-center gap-2 text-blue-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5 text-blue-600">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        How to Spot Misinformation
+                    </h2>
+                    <p class="text-sm mt-1 text-blue-700">
+                        Learn to identify common manipulation techniques used in deceptive content
+                    </p>
+                </div>
+                <div class="p-6">
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div class="p-5 bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 class="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Emotional Manipulation
+                            </h4>
+                            <p class="text-sm text-gray-500">Content that uses strong emotional language to bypass critical thinking and provoke reactions</p>
+                        </div>
+                        <div class="p-5 bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 class="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Lack of Credible Sources
+                            </h4>
+                            <p class="text-sm text-gray-500">Claims without verifiable evidence, references, or authoritative sources</p>
+                        </div>
+                        <div class="p-5 bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 class="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Clickbait Headlines
+                            </h4>
+                            <p class="text-sm text-gray-500">Sensational or exaggerated titles that don't match the actual content quality</p>
+                        </div>
+                        <div class="p-5 bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 class="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Repetition Tactics
+                            </h4>
+                            <p class="text-sm text-gray-500">Repeating false claims multiple times to create false sense of credibility</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 bg-blue-50 rounded-b-lg">
+                    <p class="text-sm text-blue-700 font-medium flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Always verify information from multiple reliable sources before sharing
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border-0 mt-6 overflow-hidden">
+                <div class="p-6 bg-gradient-to-r from-green-50 to-emerald-50">
+                    <h2 class="text-xl font-semibold flex items-center gap-2 text-green-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5 text-green-600">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-8.6"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Trusted Fact-Checking Resources
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid gap-3">
+                        <div class="flex items-center gap-3 p-3 bg-white border border-green-100 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-700">Alt News (altnews.in) - Indian fact-checking website</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-white border border-green-100 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-700">Boom Live (boomlive.in) - Digital journalism and fact-checking</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-white border border-green-100 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-700">Vishvas News (vishvasnews.com) - Multi-lingual fact-checking platform</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-white border border-green-100 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-700">Google Fact Check Tools - Search across verified fact-checkers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentTextarea = document.getElementById('content');
+            const contentUrl = document.getElementById('content-url');
+            const analyzeButton = document.getElementById('analyze-btn');
+            const resultsContainer = document.getElementById('results-container');
+            const initialStateDiv = document.getElementById('initial-state');
+
+            const getCredibilityColor = (score) => {
+                if (score >= 80) return 'text-green-600';
+                if (score >= 60) return 'text-yellow-600';
+                return 'text-red-600';
+            };
+
+            const getCredibilityText = (score) => {
+                if (score >= 80) return 'Highly Credible';
+                if (score >= 60) return 'Moderately Credible';
+                return 'Likely Misinformation';
+            };
+
+            const getSentimentColor = (sentiment) => {
+                switch (sentiment.toLowerCase()) {
+                    case 'positive': return 'bg-green-100 text-green-800';
+                    case 'negative': return 'bg-red-100 text-red-800';
+                    case 'neutral': return 'bg-gray-100 text-gray-800';
+                    default: return 'bg-gray-100 text-gray-800';
+                }
+            };
+
+            const getBiasColor = (bias) => {
+                switch (bias.toLowerCase()) {
+                    case 'left-leaning': return 'bg-blue-100 text-blue-800';
+                    case 'right-leaning': return 'bg-red-100 text-red-800';
+                    case 'centrist': return 'bg-gray-100 text-gray-800';
+                    default: return 'bg-gray-100 text-gray-800';
+                }
+            };
+
+            const renderResults = (result) => {
+                resultsContainer.innerHTML = `
+                    <div class="text-center space-y-4">
+                        <div class="text-5xl font-bold ${getCredibilityColor(result.credibilityScore)}">
+                            ${result.credibilityScore}%
+                        </div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full ${getCredibilityColor(result.credibilityScore)} bg-opacity-10 backdrop-blur-sm">
+                            ${result.credibilityScore >= 80 ? `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-8.6"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            ` : result.credibilityScore >= 60 ? `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            ` : `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-5 w-5">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            `}
+                            <span class="font-semibold">${getCredibilityText(result.credibilityScore)}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+                        <div class="p-4 rounded-lg ${getSentimentColor(result.sentiment)}">
+                            <h4 class="text-sm font-semibold">Sentiment</h4>
+                            <p class="text-lg font-bold">${result.sentiment}</p>
+                        </div>
+                        <div class="p-4 rounded-lg ${getBiasColor(result.bias)}">
+                            <h4 class="text-sm font-semibold">Bias</h4>
+                            <p class="text-lg font-bold">${result.bias}</p>
+                        </div>
+                    </div>
+
+                    ${result.historicalFactCheck.isDebunked ? `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+                            <h3 class="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                Previously Debunked Claim
+                            </h3>
+                            <p class="text-sm text-red-800 leading-relaxed">
+                                This claim has been previously debunked by
+                                <a href="${result.historicalFactCheck.link}" class="font-medium text-blue-600 hover:underline" target="_blank">${result.historicalFactCheck.source}</a>.
+                            </p>
+                        </div>
+                    ` : ''}
+
+                    ${result.detectedTechniques.length > 0 ? `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+                            <h3 class="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                Detected Manipulation Techniques:
+                            </h3>
+                            <ul class="space-y-2">
+                                ${result.detectedTechniques.map(tech => `
+                                    <li class="text-gray-800 text-sm flex items-start gap-2">
+                                        <span class="text-red-600">•</span>
+                                        ${tech}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                        <h3 class="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            Detailed Analysis:
+                        </h3>
+                        <p class="text-sm text-blue-800 leading-relaxed">${result.explanation}</p>
+                    </div>
+
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+                        <h3 class="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon h-4 w-4">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-8.6"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            Recommended Actions:
+                        </h3>
+                        <ul class="space-y-2">
+                            ${result.suggestedActions.map(action => `
+                                <li class="text-gray-800 text-sm flex items-start gap-2">
+                                    <span class="text-green-600">•</span>
+                                    ${action}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center feedback-container">
+                        <p class="text-sm text-gray-600 mb-2">Was this analysis helpful?</p>
+                        <div class="flex justify-center gap-4">
+                            <button class="px-4 py-2 text-sm font-semibold rounded-lg border border-green-400 text-green-700 hover:bg-green-100 feedback-btn" data-feedback="yes">
+                                👍 Yes
+                            </button>
+                            <button class="px-4 py-2 text-sm font-semibold rounded-lg border border-red-400 text-red-700 hover:bg-red-100 feedback-btn" data-feedback="no">
+                                👎 No
+                            </button>
+                        </div>
+                        <div id="feedback-message" class="mt-2 text-sm text-gray-500 hidden">Thank you for your feedback!</div>
+                    </div>
+                `;
+
+                // Add event listeners for feedback buttons after they are rendered
+                document.querySelectorAll('.feedback-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const feedback = e.target.dataset.feedback;
+                        console.log(`User provided feedback: ${feedback}`);
+                        
+                        // Hide buttons and show message
+                        document.querySelector('.feedback-container').classList.add('flex-col');
+                        document.querySelector('.feedback-container .flex').style.display = 'none';
+                        document.getElementById('feedback-message').classList.remove('hidden');
+                    });
+                });
+            };
+
+            const renderAnalyzing = () => {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-6"></div>
+                        <p class="text-gray-500 font-medium">Scanning for misinformation patterns...</p>
+                        <p class="text-sm text-gray-500 mt-2">This may take a few moments</p>
+                    </div>
+                `;
+            };
+
+            analyzeButton.addEventListener('click', () => {
+                const inputText = contentTextarea.value.trim();
+                const inputUrl = contentUrl.value.trim();
+
+                if (!inputText && !inputUrl) {
+                    alert('Please enter content or a URL to analyze.');
+                    return;
+                }
+
+                analyzeButton.disabled = true;
+                analyzeButton.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Analyzing...
+                    </div>
+                `;
+                
+                renderAnalyzing();
+
+                // Simulate AI analysis (replicates the original setTimeout)
+                setTimeout(() => {
+                    const mockResult = {
+                        credibilityScore: Math.floor(Math.random() * 100),
+                        isLikelyMisinformation: Math.random() > 0.7,
+                        sentiment: ['Positive', 'Negative', 'Neutral'][Math.floor(Math.random() * 3)],
+                        bias: ['Left-leaning', 'Right-leaning', 'Centrist'][Math.floor(Math.random() * 3)],
+                        historicalFactCheck: {
+                            isDebunked: Math.random() > 0.5,
+                            source: 'Boom Live',
+                            link: '#'
+                        },
+                        detectedTechniques: [
+                            'Emotional Manipulation',
+                            'Lack of Credible Sources',
+                            'Sensationalist Headline',
+                            'Repetition Tactics'
+                        ].slice(0, Math.floor(Math.random() * 4) + 1),
+                        explanation: 'This content shows signs of emotional manipulation and lacks verifiable sources. The language used is designed to provoke strong reactions rather than inform. The bias appears to be intentional to promote a specific viewpoint.',
+                        suggestedActions: [
+                            'Check multiple reliable sources',
+                            'Verify claims with fact-checking websites',
+                            'Look for original sources of information'
+                        ]
+                    };
+
+                    renderResults(mockResult);
+                    analyzeButton.disabled = false;
+                    analyzeButton.innerHTML = '🔍 Analyze Content';
+                }, 2000);
+            });
+
+            contentTextarea.addEventListener('input', () => {
+                analyzeButton.disabled = !contentTextarea.value.trim() && !contentUrl.value.trim();
+            });
+
+            contentUrl.addEventListener('input', () => {
+                analyzeButton.disabled = !contentTextarea.value.trim() && !contentUrl.value.trim();
+            });
+        });
+    </script>
+
+</body>
+</html>
